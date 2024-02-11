@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %} BinoMind {% endblock %}
+
+{% block wrapper %}
+<!-- Wrapper -->
+	<div id="wrapper" class="fade-in">
+		<!-- Intro -->
+		<div id="intro">
+			<h1>BinoMind</h1>
+			<p>Explore the Depths of the Human Mind and <br />
+				Embark on a Journey Towards Well-being with BinoMind</p>
+			<ul class="actions">
+				<li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continue</a></li>
+			</ul>
+		</div>
+{% endblock %}
+
+{% block content %}
+	{{super()}}
+	<!-- Main -->
+		<div id="main">
+
+      <!-- TODO: add a flash message here for users registering twice -->
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					{% for message in messages %}
+						<p class="flash">{{ message }}</p>
+					{% endfor %}
+				{% endif %}
+		  	{% endwith %}
+
+		<!-- Featured Post -->
+			{% if all_posts: %}
+				<article class="post featured">
+					<header class="major">
+						<span class="date">{{all_posts[0].date}}</span>
+						<h2><a href="{{url_for('show_post', post_id= all_posts[0].id)}}">{{all_posts[0].title}}</a></h2>
+						<p>{{all_posts[0].subtitle}}</p>
+					</header>
+					<a href="{{url_for('show_post', post_id= all_posts[0].id)}}" class="image main">
+						<img src="{{all_posts[0].img_url}}" alt="img here" width="900" height="500"/>
+					</a>
+					<ul class="actions special">
+						<li><a href="{{url_for('show_post', post_id= all_posts[0].id)}}" class="button large">Full Post</a></li>
+					</ul>
+				</article>
+			{% endif %}
+
+		<!-- Posts -->
+			<section class="posts">
+				<!-- show latest post on top -->
+				{% for blogs in all_posts[0:6]: %}		<!-- only latest 6 post show on home page-->
+					<article>
+						<header>
+							<span class="date">{{blogs.date}}</span>
+							<h2><a href="{{url_for('show_post', post_id= blogs.id)}}">{{blogs.title}}<br /></a></h2>
+						</header>
+						<a href="{{ url_for('show_post', post_id=blogs.id) }}" class="image fit">
+						  <img src="{{ blogs.img_url }}" alt="img here" width="350" height="250"/>
+						</a>
+						<p>{{blogs.subtitle}}</p>
+						<ul class="actions special">
+							{% if current_user.id == 1:%}
+								<li><a href="{{url_for('edit_post', post_id= blogs.id)}}" class="button small">Edit Post</a></li>
+								<li><a href="{{url_for('show_post', post_id= blogs.id)}}" class="button small">Full Post</a></li>
+								<li><a href="{{url_for('delete_post', post_id= blogs.id)}}" class="button small">Delete Post</a></li>
+							{% else: %}
+								<li><a href="{{url_for('show_post', post_id= blogs.id)}}" class="button small">Full Post</a></li>
+							{% endif %}
+						</ul>
+					</article>
+				{% endfor %}
+			</section>
+
+			{% if current_user.id == 1: %}
+				<div class="d-flex justify-content-center">
+					<a href="{{url_for('add_new_post')}}" class="button medium">Create New Post</a>
+				</div>
+			{% endif %}
+
+		<!-- Footer -->
+			<footer>
+				<div class="pagination">
+					<!--<a href="#" class="previous">Prev</a>-->
+					<a href="#" class="page active">1</a>
+
+					<a href="{{url_for('all_collection')}}" class="next">more...</a>
+				</div>
+			</footer>
+	</div>
+{% endblock %}

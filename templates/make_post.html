@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %} Create Post {% endblock %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block wrapper %}
+	<!-- Wrapper -->
+	<div id="wrapper">
+{% endblock %}
+
+{% block content %}
+	{{super()}}
+
+<!-- Page Header -->
+<div id="main">
+	<div class=" row">
+		<div class="container col-xl-12">
+		  <!-- TODO: Show a different h2 if editing existing post -->
+			{% if is_edit: %}
+				<h2><u>Edit Post</u></h2>
+			{% else:%}
+				<h2> <u>New Post</u></h2>
+			{% endif %}
+		</div>
+
+		<div class="col-xl-12 col-lg-8 col-md-10 mx-auto">
+			<!-- TODO:-Add CKEditor and render the form here -->
+			{{ ckeditor.load() }}
+			{{ ckeditor.config(name='body')}}
+			{{render_form(form, novalidate=True, button_map={"submit": "primary"})}}
+
+			<a class="px-4" href="{{url_for('home')}}">Back to Home</a>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

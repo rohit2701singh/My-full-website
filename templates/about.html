@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}About Me{% endblock %}
+
+{% block wrapper %}
+	<!-- Wrapper -->
+	<div id="wrapper">
+{% endblock %}
+
+{% block content %}
+	{{super()}}
+	<!-- Main -->
+	<div id="main">
+		<div class="page-heading text-center">
+			<h1>About Me</h1>
+		</div>
+<!--		  <div class="container px-4 px-lg-12">-->
+			<div class="row gx-4 gx-lg-5 justify-content-center">
+			  <div class="col-xl-10 col-lg-10 col-md-8">
+				<p>
+					Welcome to BinoMind – my sanctuary for exploring the depths of the human mind and embarking on
+					a transformative journey towards well-being. At BinoMind, I believe in the power of psychology to enlighten, empower, and elevate.
+				</p>
+				<p>
+					My mission is to make the complex world of psychology accessible and relatable, helping you unlock
+					the keys to understanding yourself and those around you. Through my engaging videos, insightful blogs,
+					and interactive content across platforms like YouTube and Instagram, I aim to foster a community where growth, healing, and self-discovery thrive.
+				</p>
+				<p>
+					From exploring the intricacies of human behavior to providing practical advice for mental well-being,
+					BinoMind is a space where curiosity meets clarity. Each piece of content, be it a video or a blog post,
+					is designed to offer value, provoke thought, and inspire action towards a healthier mind and a happier life.
+				</p>
+				<p>
+					More than just a platform, BinoMind is a community. It's a place for you to discover, learn, and
+					grow alongside others who share your interest in psychology and well-being. Whether you're here to
+					find answers, seek comfort, or simply satisfy your curiosity, you're welcome in our community of seekers and learners.
+				</p>
+			  	<p>
+					Follow me on YouTube and Instagram to stay updated with my latest content. Dive deep into the world
+					of psychology with me, and let's embark on this journey of discovery and growth together.<br /><br />
+					<b>"Welcome to BinoMind – where minds meet and lives change."</b><br />
+					Happy reading!
+				</p>
+				<p>
+
+				</p>
+			  	<div class="d-flex justify-content-center">
+					<a href="{{url_for('home')}}" class="button small">Back to Home</a>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+{% endblock %}

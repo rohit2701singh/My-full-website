@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %} All Blogs {% endblock %}
+
+{% block wrapper %}
+	<!-- Wrapper -->
+	<div id="wrapper">
+{% endblock %}
+
+{% block content %}
+	{{super()}}
+
+	<!-- Main -->
+	<div id="main">
+		<div class="page-heading text-center">
+            <h2><u>My All Blogs</u></h2>
+		</div>
+        <!-- Main Content-->
+        <div class="container px-lg-5 col-sm-12">
+            {% for blog in all_blog: %}
+                <div class="mb-3 row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-10">
+                        <div class="row g-0 border rounded overflow-hidden flex-md-row shadow-sm h-md-250 position-relative">
+                            <div class="col p-2 d-flex flex-column position-static">
+                                <a href="{{url_for('show_post', post_id=blog.id)}}">
+                                    <h3 class="mb-2">{{blog.title}}</h3>
+                                </a>
+                                <div class="mb-0 text-body-secondary">{{blog.subtitle}}</div>
+                                <p class="card-text mb-auto">author: {{blog.author}}</p>
+                                <p>
+                                    {% if current_user.id == 1:%}
+                                        <a href="{{url_for('edit_post', post_id= blog.id)}}" class="mt-2 mx-2 button small">Edit Post</a>
+                                        <a href="{{url_for('show_post', post_id= blog.id)}}" class="mt-2 button small">Full Post</a>
+                                        <a href="{{url_for('delete_post', post_id= blog.id)}}" class="mt-2 mx-2 button small">Delete Post</a>
+                                    {% else: %}
+                                        <a href="{{url_for('show_post', post_id= blog.id)}}" class="mt-2 button small">Full Post</a>
+                                    {% endif %}
+						        </p>
+                            </div>
+                            <div class="col-auto d-none d-lg-block">
+                                <a href="{{url_for('show_post', post_id=blog.id)}}">
+                                    <img class="mt-4" src="{{blog.img_url}}" width="350" height="200">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+                <div class="d-flex justify-content-center">
+                    {% if current_user.id == 1:%}
+                        <a href="{{url_for('add_new_post')}}" class="mt-3 button small">Create New Post</a>
+                    {% endif %}
+                    <a href="{{url_for('all_collection')}}" class="mt-3 mx-2 button small">Go Up</a>
+                    <a href="{{url_for('home')}}" class="mt-3 button small">Back to Home</a>
+				</div>
+        </div>
+    </div>
+{% endblock %}

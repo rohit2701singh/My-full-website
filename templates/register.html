@@ -1,0 +1,40 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% extends 'base.html' %}
+{% block title %} Registration Page {% endblock %}
+
+{% block wrapper %}
+	<!-- Wrapper -->
+	<div id="wrapper">
+{% endblock %}
+
+{% block content %}
+	{{super()}}
+<div id="main">
+  	<div class="container">
+    	<div class="row">
+
+			<!-- TODO: add a flash message here for users registering twice -->
+			{% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p class="flash">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+			{% endwith %}
+
+			<div class="col-lg-6 col-md-10 mx-auto">
+				<!--TODO: render login form here-->
+				{{render_form(form, novalidate=True)}}
+
+				{% if is_detail_update_active: %}
+					<a href="{{url_for('home')}}" class="button small">cancel</a>
+				{% else: %}
+					{% if not current_user.is_authenticated: %}
+						<a href="{{url_for('login')}}" class="button small">already registered! LogIn</a>
+					{% endif %}
+				{% endif %}
+			</div>
+    	</div>
+  	</div>
+</div>
+{% endblock %}
