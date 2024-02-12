@@ -34,11 +34,11 @@
                                     {% else: %}
                                         <a href="{{url_for('show_post', post_id= blog.id)}}" class="mt-2 button small">Full Post</a>
                                     {% endif %}
-						        </p>
+                                </p>
                             </div>
-                            <div class="col-auto d-none d-lg-block">
+                            <div class="col-auto d-flex justify-content-center align-items-center">
                                 <a href="{{url_for('show_post', post_id=blog.id)}}">
-                                    <img class="mt-4" src="{{blog.img_url}}" width="350" height="200">
+                                    <img class="mt-4 img-fluid" src="{{blog.img_url}}" width="350" height="200">
                                 </a>
                             </div>
                         </div>

@@ -100,7 +100,7 @@ def login():
     if login_form.validate_on_submit():
         user_email = login_form.email.data
         user_password = login_form.password.data
-        select_user = db.session.execute(db.select(User).where(User.email == user_email)).scalar()
+        select_user = db.session.execute(db.select(User).where(User.email == user_email.lower())).scalar()
 
         if select_user:
             password_from_database = select_user.password
@@ -129,13 +129,13 @@ def register():
         user_name = register_form.name.data
         user_email = register_form.email.data
 
-        select_user = db.session.execute(db.select(User).where(User.email == user_email)).scalar()
+        select_user = db.session.execute(db.select(User).where(User.email == user_email.lower())).scalar()
         if select_user:
             flash(message='already registered with email, please log in instead.')
             return redirect(url_for('login'))
 
         user_password = generate_password_hash(register_form.password.data, salt_length=8, method='pbkdf2:sha256:600000')
-        new_user = User(username=user_name, email=user_email, password=user_password)
+        new_user = User(username=user_name, email=user_email.lower(), password=user_password)
         db.session.add(new_user)
         db.session.commit()
 
@@ -315,4 +315,4 @@ def contact():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
