@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block title %} Blog Details {% endblock %}
 
+<!--{% block styles %}-->
+<!--	{{super()}}-->
+<!--	<link rel="stylesheet" href="style.css" />-->
+<!--{% endblock %}-->
+
 {% block wrapper %}
 	<!-- Wrapper -->
 	<div id="wrapper">
@@ -20,9 +25,8 @@
 					<img src="{{blog.img_url}}" alt="img here" width="900" height="500" />
 
 			</a>
-<!--				<ul class="actions special">-->
-					<p>{{ blog.body|safe}}</p>
-<!--				</ul>-->
+			<p>{{ blog.body|safe}}</p>
+
 			<div class="d-flex justify-content-center">
 				{% if current_user.id == 1: %}
 					<a href="{{url_for('edit_post', post_id= blog.id)}}" class="mx-3 button small">Edit Post</a>
