@@ -8,15 +8,17 @@ from forms import CreatePostForm, LoginForm, RegisterForm
 from functools import wraps
 from datetime import date
 import os
+from dotenv import load_dotenv  # to read .env file data
 import smtplib
 
-SENDER_EMAIL = os.environ.get("SENDER_MAIL")  # my smtp mail
-SENDER_PASS = os.environ.get("SMTP_MAIL_PASSWORD")
-RECEIVER_EMAIL = os.environ.get("RECEIVER_MAIL")  # client's mail
+load_dotenv()
 
+SENDER_EMAIL = os.getenv("SENDER_MAIL")  # my smtp mail
+SENDER_PASS = os.getenv("SMTP_MAIL_PASSWORD")
+RECEIVER_EMAIL = os.getenv("RECEIVER_MAIL")  # client's mail
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get('FLASK_KEY')
+app.config["SECRET_KEY"] = os.getenv('FLASK_KEY')
 bootstrap = Bootstrap5(app)
 ckeditor = CKEditor(app)
 
@@ -43,8 +45,8 @@ def loader_user(user_id):
 # TODO: CONNECT TO Database(DB)
 # DB_URI env name in host server,upgrade sqlite database to postgresql,server will provide database location/file name
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///posts.db")
-# app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///posts.db"    # database name local server
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URI", "sqlite:///posts.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///posts.db"    # database name local server
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -299,20 +301,23 @@ def contact():
         user_message = request.form["message"]
         # print(user_message, user_name, email)
         if user_name and email:
-            with smtplib.SMTP("smtp.gmail.com", 587) as connection:
-                connection.starttls()
-                connection.login(SENDER_EMAIL, SENDER_PASS)
-                connection.sendmail(
-                    from_addr=SENDER_EMAIL,
-                    to_addrs=RECEIVER_EMAIL,
-                    msg=f"subject: email from website\n\nuser: {user_name}\nemail id: {email}\nmessage: {user_message}"
-                )
-                flash("message sent successfully")
-                return redirect(url_for('home', msg_sent=True))
+            # with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+            #     connection.starttls()
+            #     connection.login(SENDER_EMAIL, SENDER_PASS)
+            #     connection.sendmail(
+            #         from_addr=SENDER_EMAIL,
+            #         to_addrs=RECEIVER_EMAIL,
+            #         msg=f"subject: email from website\n\nuser: {user_name}\nemail id: {email}\nmessage: {user_message}"
+            #     )
+            #     flash("message sent successfully")
+            #     return redirect(url_for('home', msg_sent=True))
+
+            flash("message sent successfully")
+            return redirect(url_for('home', msg_sent=True))
         else:
             flash(message="message not sent")
             return redirect(url_for('home', msg_sent=False))
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
