@@ -57,6 +57,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100),  unique=True,  nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    pet_name = db.Column(db.String(100), nullable=False)
 
 
 class BlogPost(db.Model):
@@ -94,6 +95,35 @@ def all_collection():
     return render_template("blog_collection.html", all_blog=all_data[::-1], is_all_collection_active=True)
 
 
+@app.route('/recover', methods=['GET', 'POST'])
+def account_recover():
+    if request.method == 'POST':
+        if "login" in request.form:
+            recover_mail = request.form.get('mail').lower().strip()
+            user_pet = request.form.get('pet').lower().strip()
+            select_user = db.session.execute(db.select(User).where(User.email == recover_mail.lower())).scalar()
+            if select_user:
+                pet_name_match = check_password_hash(pwhash=select_user.pet_name, password=user_pet)
+                print(user_pet, pet_name_match)
+                if recover_mail == select_user.email and pet_name_match:
+                    login_user(select_user)  # for authentication
+                    flash(message='Successfully logged in. Please update your information')
+                    return render_template('user_details.html', current_user=current_user, is_user_detail_active=True )
+                else:
+                    flash(message="detail is incorrect. Pet name is wrong")
+                    return redirect(url_for('account_recover'))
+            else:
+                flash(message="email does not exist.")
+                return redirect(url_for('account_recover'))
+        elif "cancel" in request.form:
+            flash(message="account recovery cancelled")
+            return redirect(url_for('home'))
+        else:
+            flash(message="please fill the details to register")
+            return redirect(url_for('register'))
+    return render_template('recover_account.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm()
@@ -128,14 +158,16 @@ def register():
     if register_form.validate_on_submit():
         user_name = register_form.name.data
         user_email = register_form.email.data.strip()
+        user_pet = register_form.pet.data.lower().strip()
 
         select_user = db.session.execute(db.select(User).where(User.email == user_email.lower())).scalar()
         if select_user:
             flash(message='already registered with email, please log in instead.')
             return redirect(url_for('login'))
-
         user_password = generate_password_hash(register_form.password.data, salt_length=8, method='pbkdf2:sha256:600000')
-        new_user = User(username=user_name, email=user_email.lower(), password=user_password)
+        pet_name_hash = generate_password_hash(user_pet, salt_length=8, method='pbkdf2:sha256:600000')
+
+        new_user = User(username=user_name, email=user_email.lower(), password=user_password, pet_name=pet_name_hash)
         db.session.add(new_user)
         db.session.commit()
 
@@ -270,6 +302,7 @@ def user_details():
         if update_form.validate_on_submit():
             user_name = update_form.name.data
             user_email = update_form.email.data
+            user_pet_name = update_form.pet.data
             select_user = db.session.execute(db.select(User).where(User.email == user_email)).scalar()
 
             def update_user():
@@ -277,6 +310,7 @@ def user_details():
                 user_old_data.username = user_name
                 user_old_data.email = user_email
                 user_old_data.password = generate_password_hash(update_form.password.data, salt_length=8, method='pbkdf2:sha256:600000')
+                user_old_data.pet = user_pet_name
                 db.session.commit()
                 flash(message="User Details update successfully")
 
