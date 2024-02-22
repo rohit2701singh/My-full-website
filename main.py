@@ -45,8 +45,7 @@ def loader_user(user_id):
 # TODO: CONNECT TO Database(DB)
 # DB_URI env name in host server,upgrade sqlite database to postgresql,server will provide database location/file name
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URI", "sqlite:///posts.db")
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///posts.db"    # database name local server
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_URI", "sqlite:///posts.db")    # database name local server
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -79,7 +78,6 @@ with app.app_context():
 @app.route('/')
 def home():
     posts = db.session.execute(db.select(BlogPost)).scalars().all()     # [<BlogPost 1(oldest)>, <BlogPost 2>, <BlogPost 3(latest created)>]
-    # print(posts)
     return render_template("index.html", all_posts=posts[::-1], is_home_active=True)   # send latest first [<BlogPost 3>, <BlogPost 2>, <BlogPost 1>]
 
 
@@ -100,7 +98,7 @@ def all_collection():
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit():
-        user_email = login_form.email.data
+        user_email = login_form.email.data.strip()
         user_password = login_form.password.data
         select_user = db.session.execute(db.select(User).where(User.email == user_email.lower())).scalar()
 
@@ -129,7 +127,7 @@ def register():
     register_form.submit.label.text = 'register me!'   # submit buttons is dynamic for registration and update user info
     if register_form.validate_on_submit():
         user_name = register_form.name.data
-        user_email = register_form.email.data
+        user_email = register_form.email.data.strip()
 
         select_user = db.session.execute(db.select(User).where(User.email == user_email.lower())).scalar()
         if select_user:
@@ -162,6 +160,8 @@ def add_new_post():
         title = post_form.title.data
         subtitle = post_form.subtitle.data
         img_url = post_form.img_url.data
+        if not img_url or "https://" not in img_url:
+            img_url = "static/images/default.jpg"
         author = post_form.author.data
         body = post_form.body.data
         # print(title, subtitle, img_url, author, body)
@@ -185,6 +185,7 @@ def add_new_post():
 def edit_post():
     blog_id = request.args.get('post_id')
     post = db.session.execute(db.select(BlogPost).where(BlogPost.id == blog_id)).scalar()
+
     edit_form = CreatePostForm(
         title=post.title,
         subtitle=post.subtitle,
@@ -197,6 +198,8 @@ def edit_post():
         post.title = edit_form.title.data
         post.subtitle = edit_form.subtitle.data
         post.img_url = edit_form.img_url.data
+        if not post.img_url or "https://" not in post.img_url:  # if img url not given then take default img
+            post.img_url = "static/images/default.jpg"
         post.author = edit_form.author.data
         post.body = edit_form.body.data
         db.session.commit()
@@ -235,7 +238,7 @@ def confirm_delete():
                     return redirect(url_for('user_details'))
             elif "cancel" in request.form:
                 flash(message="Account deletion cancelled")
-                return redirect(url_for('home'))
+                return redirect(url_for('user_details'))
 
     else:
         post_id = request.args.get('post_id')
@@ -269,17 +272,25 @@ def user_details():
             user_email = update_form.email.data
             select_user = db.session.execute(db.select(User).where(User.email == user_email)).scalar()
 
-            if select_user and select_user.id == current_user.id:     # if email present but id are same then make change, because both are same person
+            def update_user():
                 user_old_data = db.session.execute(db.select(User).where(User.id == current_user.id)).scalar()
                 user_old_data.username = user_name
                 user_old_data.email = user_email
                 user_old_data.password = generate_password_hash(update_form.password.data, salt_length=8, method='pbkdf2:sha256:600000')
                 db.session.commit()
                 flash(message="User Details update successfully")
-                return redirect(url_for('user_details'))
+
+            if select_user:     # if email present but id are same then make change, because both are same person
+                if select_user.id == current_user.id:
+                    update_user()
+                    return redirect(url_for('user_details'))
+                else:
+                    flash(message="Can't change email. Email already exists. Choose another email.")
+                    return redirect(url_for('user_details'))
             else:
-                flash(message="Can't change email. Email already exists. Choose another email.")
+                update_user()
                 return redirect(url_for('user_details'))
+
         return render_template('register.html', form=update_form, current_user=current_user, is_detail_update_active=True)
     return render_template("user_details.html", current_user=current_user, is_user_detail_active=True)  # ex. <user 3>
 
@@ -293,7 +304,7 @@ def about():
 def contact():
     if request.method == "POST":
         if not current_user.is_authenticated:
-            flash(message="You need to login or register to contact us.")
+            flash(message="login is required to contact.")
             return redirect(url_for("login"))
 
         user_name = request.form["name"]
@@ -301,19 +312,16 @@ def contact():
         user_message = request.form["message"]
         # print(user_message, user_name, email)
         if user_name and email:
-            # with smtplib.SMTP("smtp.gmail.com", 587) as connection:
-            #     connection.starttls()
-            #     connection.login(SENDER_EMAIL, SENDER_PASS)
-            #     connection.sendmail(
-            #         from_addr=SENDER_EMAIL,
-            #         to_addrs=RECEIVER_EMAIL,
-            #         msg=f"subject: email from website\n\nuser: {user_name}\nemail id: {email}\nmessage: {user_message}"
-            #     )
-            #     flash("message sent successfully")
-            #     return redirect(url_for('home', msg_sent=True))
-
-            flash("message sent successfully")
-            return redirect(url_for('home', msg_sent=True))
+            with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+                connection.starttls()
+                connection.login(SENDER_EMAIL, SENDER_PASS)
+                connection.sendmail(
+                    from_addr=SENDER_EMAIL,
+                    to_addrs=RECEIVER_EMAIL,
+                    msg=f"subject: email from website\n\nuser: {user_name}\nemail id: {email}\nmessage: {user_message}"
+                )
+                flash("message sent successfully")
+                return redirect(url_for('home', msg_sent=True))
         else:
             flash(message="message not sent")
             return redirect(url_for('home', msg_sent=False))
