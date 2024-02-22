@@ -18,6 +18,7 @@ class RegisterForm(FlaskForm):
     name = StringField(label='username', validators=[DataRequired()])
     email = StringField(label='email id', validators=[DataRequired()])
     password = PasswordField(label='password', validators=[DataRequired()])
+    pet = StringField(label='set your pet name (for account recovery purposes)', validators=[DataRequired()])
     submit = SubmitField()      # set label later in register and user_details update
 
 
@@ -26,3 +27,4 @@ class LoginForm(FlaskForm):
     email = StringField(label='email id', validators=[DataRequired()])
     password = PasswordField(label='password', validators=[DataRequired()])
     submit = SubmitField(label='Login')
+
