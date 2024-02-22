@@ -24,10 +24,11 @@
 
 		<div class="col-xl-12 col-lg-8 col-md-10 mx-auto">
 			<!-- TODO:-Add CKEditor and render the form here -->
+			<form method="post" novalidate>
 			{{ ckeditor.load() }}
 			{{ ckeditor.config(name='body')}}
-			{{render_form(form, novalidate=True, button_map={"submit": "primary"})}}
-
+			{{render_form(form, button_map={"submit": "primary"})}}
+				</form>
 			<a class="px-4" href="{{url_for('home')}}">Back to Home</a>
 		</div>
 	</div>

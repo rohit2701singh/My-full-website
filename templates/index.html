@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
-{% block title %} home {% endblock %}
+{% block title %} My Website {% endblock %}
 
 {% block wrapper %}
 <!-- Wrapper -->
 	<div id="wrapper" class="fade-in">
 		<!-- Intro -->
 		<div id="intro">
-			<h1>This is<br>Rohit Singh</h1>
-			<p>Explore the Depths of python programming<br />
+			<h1>This is <br>Rohit's Website</h1>
+			<p>Begin a Journey of Discovery and Learning with Rohit's Website,<br>
+				Exploring Ideas, Sharing Insights, and Connecting Minds<br />
 				</p>
 			<ul class="actions">
 				<li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continue</a></li>
@@ -24,7 +25,7 @@
 			{% with messages = get_flashed_messages() %}
 				{% if messages %}
 					{% for message in messages %}
-						<p class="flash">{{ message }}</p>
+						<p><span style="color: red" class="flash">{{ message }}</span></p>
 					{% endfor %}
 				{% endif %}
 		  	{% endwith %}

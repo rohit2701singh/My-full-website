@@ -17,13 +17,14 @@
 			{% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}
-                        <p class="flash">{{ message }}</p>
+                        <span style="color: red" class="flash">{{ message }}</span>
                     {% endfor %}
                 {% endif %}
 			{% endwith %}
 
 			<div class="col-lg-6 col-md-10 mx-auto">
 				<!--TODO: render login form here-->
+				{{form.csrf_token}}
 				{{render_form(form, novalidate=True)}}
 
 				{% if is_detail_update_active: %}
