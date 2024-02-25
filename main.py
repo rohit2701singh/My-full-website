@@ -75,7 +75,6 @@ class BlogPost(db.Model):
 with app.app_context():
     db.create_all()
 
-
 @app.route('/')
 def home():
     posts = db.session.execute(db.select(BlogPost)).scalars().all()     # [<BlogPost 1(oldest)>, <BlogPost 2>, <BlogPost 3(latest created)>]
@@ -101,25 +100,24 @@ def account_recover():
         if "login" in request.form:
             recover_mail = request.form.get('mail').lower().strip()
             user_pet = request.form.get('pet').lower().strip()
-            select_user = db.session.execute(db.select(User).where(User.email == recover_mail.lower())).scalar()
+            select_user = db.session.execute(db.select(User).where(User.email == recover_mail)).scalar()
             if select_user:
                 pet_name_match = check_password_hash(pwhash=select_user.pet_name, password=user_pet)
-                print(user_pet, pet_name_match)
                 if recover_mail == select_user.email and pet_name_match:
                     login_user(select_user)  # for authentication
-                    flash(message='Successfully logged in. Please update your information')
+                    flash('Successfully logged in. Please update your information', 'success')
                     return render_template('user_details.html', current_user=current_user, is_user_detail_active=True )
                 else:
-                    flash(message="detail is incorrect. Pet name is wrong")
+                    flash("detail is incorrect. Pet name is wrong", 'warning')
                     return redirect(url_for('account_recover'))
             else:
-                flash(message="email does not exist.")
+                flash("email does not exist.", 'warning')
                 return redirect(url_for('account_recover'))
         elif "cancel" in request.form:
-            flash(message="account recovery cancelled")
+            flash("account recovery cancelled", 'info')
             return redirect(url_for('home'))
         else:
-            flash(message="please fill the details to register")
+            flash("please fill the details to register", 'info')
             return redirect(url_for('register'))
     return render_template('recover_account.html')
 
@@ -128,22 +126,22 @@ def account_recover():
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit():
-        user_email = login_form.email.data.strip()
+        user_email = login_form.email.data.strip().lower()
         user_password = login_form.password.data
-        select_user = db.session.execute(db.select(User).where(User.email == user_email.lower())).scalar()
+        select_user = db.session.execute(db.select(User).where(User.email == user_email)).scalar()
 
         if select_user:
             password_from_database = select_user.password
             match_password = check_password_hash(pwhash=password_from_database, password=user_password)
             if match_password:
                 login_user(select_user)  # for authentication
-                flash(message='successfully logged in')
+                flash('successfully logged in', 'success')
                 return redirect(url_for('home'))
             else:
-                flash(message='password does not match, please enter again.')
+                flash('password does not match, please enter again.', 'warning')
                 return redirect(url_for('login'))
         else:
-            flash(message='email does not exist, please register.')
+            flash('email does not exist, please register.', 'warning')
             return redirect(url_for('register'))
 
     return render_template("login.html", form=login_form, current_user=current_user, is_login_active=True)
@@ -157,30 +155,41 @@ def register():
     register_form.submit.label.text = 'register me!'   # submit buttons is dynamic for registration and update user info
     if register_form.validate_on_submit():
         user_name = register_form.name.data
-        user_email = register_form.email.data.strip()
+        user_email = register_form.email.data.strip().lower()
         user_pet = register_form.pet.data.lower().strip()
 
-        select_user = db.session.execute(db.select(User).where(User.email == user_email.lower())).scalar()
+        select_user = db.session.execute(db.select(User).where(User.email == user_email)).scalar()
+        # print(current_user.is_authenticated)
         if select_user:
-            flash(message='already registered with email, please log in instead.')
-            return redirect(url_for('login'))
+            if current_user.is_authenticated:
+                flash('already registered with email, choose other email to register', 'warning')
+                return redirect(url_for('register'))
+            else:
+                flash('already registered with email, login instead!', 'info')
+                return redirect(url_for('login'))
+
         user_password = generate_password_hash(register_form.password.data, salt_length=8, method='pbkdf2:sha256:600000')
         pet_name_hash = generate_password_hash(user_pet, salt_length=8, method='pbkdf2:sha256:600000')
 
-        new_user = User(username=user_name, email=user_email.lower(), password=user_password, pet_name=pet_name_hash)
+        new_user = User(username=user_name, email=user_email, password=user_password, pet_name=pet_name_hash)
         db.session.add(new_user)
         db.session.commit()
 
-        # login_user(new_user)   # if uncommented it will consider user as logged in without even entering detials in login form
-        flash(message='registered successfully, please login.')
-        return redirect(url_for('login'))
+        # login_user(new_user)   # it will consider user as logged in without even entering details in login form
+
+        if not current_user.is_authenticated:
+            flash('registered successfully, please login.', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('new user registered successfully', 'success')
+            return redirect(url_for('home'))
     return render_template("register.html", form=register_form, current_user=current_user, is_register_active=True)
 
 
 @app.route('/logout')
 def logout():
     logout_user()
-    flash(message='logged out successfully')
+    flash('logged out successfully', 'success')
     return redirect(url_for('home'))
 
 
@@ -208,6 +217,7 @@ def add_new_post():
         )
         db.session.add(add_in_database)
         db.session.commit()
+        flash("new post added successfully", 'success')
         return redirect(url_for('home'))
     return render_template('make_post.html', form=post_form, current_user=current_user, is_add_post_active=True)
 
@@ -235,6 +245,7 @@ def edit_post():
         post.author = edit_form.author.data
         post.body = edit_form.body.data
         db.session.commit()
+        flash("Post edit successful", 'success')
         return redirect(url_for("show_post", post_id=post.id))
     return render_template('make_post.html', form=edit_form, is_edit=True, current_user=current_user, is_edit_post_active=True)
 
@@ -260,16 +271,16 @@ def confirm_delete():
                     if match_password:
                         db.session.delete(current_user)
                         db.session.commit()
-                        flash(message="account deleted successfully")
+                        flash("account deleted successfully", 'success')
                         return redirect(url_for('home'))
                     else:
-                        flash(message="Can't delete account, Please enter correct password")
+                        flash("Can't delete account, Please enter correct password", 'warning')
                         return redirect(url_for('user_details'))
                 else:
-                    flash(message="Can't delete account, Please enter your password")
+                    flash("Can't delete account, Please enter your password", 'warning')
                     return redirect(url_for('user_details'))
             elif "cancel" in request.form:
-                flash(message="Account deletion cancelled")
+                flash("Account deletion cancelled", 'info')
                 return redirect(url_for('user_details'))
 
     else:
@@ -279,10 +290,10 @@ def confirm_delete():
                 post_to_delete = db.session.execute(db.select(BlogPost).where(BlogPost.id == post_id)).scalar()
                 db.session.delete(post_to_delete)
                 db.session.commit()
-                flash(message=f'post {post_id} titled "{post_to_delete.title}" deleted successfully')
+                flash(f'post {post_id} titled "{post_to_delete.title}" deleted successfully', 'success')
                 return redirect(url_for('home'))
             elif "cancel" in request.form:
-                flash(message="you chose not to delete the post")
+                flash("you chose not to delete the post", 'info')
                 return redirect(url_for('home'))
 
 
@@ -301,8 +312,8 @@ def user_details():
 
         if update_form.validate_on_submit():
             user_name = update_form.name.data
-            user_email = update_form.email.data
-            user_pet_name = update_form.pet.data
+            user_email = update_form.email.data.strip().lower()
+            user_pet_name = update_form.pet.data.strip().lower()
             select_user = db.session.execute(db.select(User).where(User.email == user_email)).scalar()
 
             def update_user():
@@ -312,14 +323,14 @@ def user_details():
                 user_old_data.password = generate_password_hash(update_form.password.data, salt_length=8, method='pbkdf2:sha256:600000')
                 user_old_data.pet = user_pet_name
                 db.session.commit()
-                flash(message="User Details update successfully")
+                flash("User Details update successfully", 'success')
 
-            if select_user:     # if email present but id are same then make change, because both are same person
-                if select_user.id == current_user.id:
+            if select_user:     # if email present and both are email same, then user can update
+                if select_user.email == current_user.email:
                     update_user()
                     return redirect(url_for('user_details'))
                 else:
-                    flash(message="Can't change email. Email already exists. Choose another email.")
+                    flash("Can't change email. Email already exists. Choose another email.", 'warning')
                     return redirect(url_for('user_details'))
             else:
                 update_user()
@@ -338,7 +349,7 @@ def about():
 def contact():
     if request.method == "POST":
         if not current_user.is_authenticated:
-            flash(message="login is required to contact.")
+            flash("login is required to contact.")
             return redirect(url_for("login"))
 
         user_name = request.form["name"]
@@ -354,12 +365,13 @@ def contact():
                     to_addrs=RECEIVER_EMAIL,
                     msg=f"subject: email from website\n\nuser: {user_name}\nemail id: {email}\nmessage: {user_message}"
                 )
-                flash("message sent successfully")
+                flash("message sent successfully", 'success')
                 return redirect(url_for('home', msg_sent=True))
         else:
-            flash(message="message not sent")
+            flash("message not sent", 'info')
             return redirect(url_for('home', msg_sent=False))
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+

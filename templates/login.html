@@ -7,30 +7,11 @@
 	<div id="wrapper">
 {% endblock %}
 
-{% block active %}
-	<ul class="links">
-		<li ><a href="{{url_for('home')}}">This is Home</a></li>
-        {{super()}}
-        <li ><a href="{{url_for('about')}}">About Me</a></li>
-    </ul>
-
-{% endblock %}
-
 {% block content %}
 	{{super()}}
-<div id="main">
   	<div class="container">
     	<div class="row">
-      		<!-- TODO: add a flash message here for users registering twice -->
-			{% with messages = get_flashed_messages() %}
-				{% if messages %}
-					{% for message in messages %}
-						<span style="color: red" class="flash">{{ message }}</span>
-					{% endfor %}
-				{% endif %}
-			{% endwith %}
-
-			<div class="col-lg-6 col-md-10 mx-auto">
+			<div class="col-lg-6 mt-4 col-md-10 mx-auto">
 				<!--TODO: render login form here-->
 				{{form.csrf_token}}
 				{{render_form(form, novalidate=True)}}
@@ -41,5 +22,4 @@
 			</div>
     	</div>
   	</div>
-</div>
 {% endblock %}

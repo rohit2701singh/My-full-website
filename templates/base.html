@@ -96,8 +96,25 @@
 				</ul>
 			</nav>
 
+		<!-- Main -->
+		<div id="main">
 
-		{% block content %}{% endblock %}
+			{% block content %}
+
+				<!-- TODO: add a flash message here -->
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+						<ul>
+							{% for category, message in messages %}
+								<li class="alert alert-{{ category }}">{{ message }}</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				{% endwith %}
+
+			{% endblock %}
+
+		</div>
 
 		<!-- Footer -->
 			<footer id="footer">

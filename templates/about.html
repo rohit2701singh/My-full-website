@@ -8,166 +8,171 @@
 
 {% block content %}
 	{{super()}}
-	<!-- Main -->
-	<div id="main">
-		<div class="page-heading text-center">
-			<h1>Features of Website</h1>
-		</div>
+
+	<div class="page-heading text-center">
+		<h1 class="mt-4">Features of Website</h1>
+	</div>
 <!--		  <div class="container px-4 px-lg-12">-->
-			<div class="row gx-4 gx-lg-5 justify-content-center">
-			  	<div class="col-xl-10 col-lg-10 col-md-8">
-					<p>
-						The website is built using the Flask framework. Here are features of this website.<br />
-						Happy reading!
-					</p>
-					<p><h3><u>Website details</u></h3></p>
+		<div class="row gx-4 gx-lg-5 justify-content-center">
+			<div class="col-xl-10 col-lg-10 col-md-8">
+				<p>
+					The website is built using the Flask framework. Here are features of this website.<br />
+					Happy reading!
+				</p>
+				<h3><u>Website details</u></h3>
+
+				<ul>
+					<li><strong>Welcome</strong><strong>: </strong>this will be visible on the top of all pages above nav bar
+
+					<ul style="list-style-type:circle">
+						<li>When the user is not logged in, it will display Welcome<strong>!</strong></li>
+						<li>When the user is logged in, it will display Welcome &lt;username&gt;! Where &lt;username&gt; is the name entered during registration by the user</li>
+					</ul>
+					</li>
+				</ul>
+
+				<ol>
+					<li><strong>Nav Bar</strong>
 
 					<ul>
-						<li><strong>Welcome</strong><strong>: </strong>this will be visible on the top of all pages above nav bar
-
-						<ul style="list-style-type:circle">
-							<li>When the user is not logged in, it will display Welcome<strong>!</strong></li>
-							<li>When the user is logged in, it will display Welcome &lt;username&gt;! Where &lt;username&gt; is the name entered during registration by the user</li>
+						<li>This is home</li>
+						<li>All blogs</li>
+						<li>Blog details</li>
+						<li>Register/Update Details</li>
+						<li>Login/Logout (shows &quot;Logout&quot; if the user is logged in, otherwise &quot;Login&quot;)</li>
+						<li>Create new post (only visible to admin when logged in)</li>
+						<li>User details (only visible to logged-in users)</li>
+						<li>About me</li>
+						<li>Social media icons<br />
+						&nbsp;</li>
+					</ul>
+					</li>
+					<li><strong>Contact form (visible all times at the bottom of page)</strong>
+					<ul>
+						<li>Send message (only logged in user can send message to admin)<br />
+						&nbsp;</li>
+					</ul>
+					</li>
+					<li><strong>This is Home</strong>
+					<ul>
+						<li>Display latest post at the top</li>
+						<li>Only latest six post will appear on home page</li>
+						<li>&ldquo;More&rdquo; button will open pages where all blogs appear (linked with all blogs)</li>
+						<li>&ldquo;Full post&rdquo; button (linked with blog details, visible all time)</li>
+						<li>Clickable titles and images (linked with blog details)</li>
+						<li>Edit/Delete button (only visible to admin when logged in)</li>
+						<li>Create new post button at the bottom (only visible to admin when logged in)</li>
+						<li><strong>Delete post:</strong>
+						<ol>
+							<li>Admin need to follow an addition step before finally deleting the post</li>
+							<li>Confirmation page shows post id and title details and asks user whether to delete or cancel</li>
+							<li>If user finally chooses to delete the post, will be deleted from database<br />
+							&nbsp;</li>
+						</ol>
+						</li>
+					</ul>
+					</li>
+					<li><strong>All blogs</strong>
+					<ul>
+						<li>Show all blogs in database (starting from latest to oldest)</li>
+						<li>Clickable title and image (linked with blog details)</li>
+						<li>Full Post button (visible with each blog at all time)</li>
+						<li>Edit post/full post/delete post (only visible to admin with each blog, when logged in)</li>
+						<li>Create new post/ go up/ back to home buttons at bottom (create button only visible to admin when logged in, other visible all time)<br />
+						&nbsp;</li>
+					</ul>
+					</li>
+					<li><strong>Blog Details (not clickable on nav bar)</strong>
+					<ul>
+						<li>Displays details of the selected post</li>
+						<li>Back to home button (returns to home page)</li>
+						<li>Edit post button (only visible to admin when logged in)<br />
+						&nbsp;</li>
+					</ul>
+					</li>
+					<li><strong>Register/ Update Details (visible only one at a time to all users, default: register)</strong>
+					<ul>
+						<li>register</li>
+						<li>Takes username, email and password from user</li>
+						<li><i>(*new update) user now can set their pet’s name, this is security question for account recovery purpose</i></li>
+						<li>If email does not exist in database, it will allow user to register first and after than open login page</li>
+						<li>&ldquo;Already register Login!&rdquo; &nbsp;Button visible only if user not logged in</li>
+						<li>Update details (appear when user decides to update his details)
+						<ul>
+							<li>User can change username, email and password</li>
+							<li>Update me and cancel button at the bottom</li>
+							<li>If entered email already exists in database other than its own, it will ask user to choose other email.
+								User can change his username and password without changing email.<br />
+							&nbsp;</li>
 						</ul>
 						</li>
 					</ul>
+					</li>
+					<li><strong>Login/Logout</strong>
+					<ul>
+						<li>Appear only one at a time (default login)</li>
+						<li><i>(*new update) if user forget their password, they can use email and pet’s name to log in</i></li>
+						<li>If user already logged in it will show logout, otherwise login</li>
+						<li>logout takes user to home page after logged out<br />
+						&nbsp;</li>
+					</ul>
+					</li>
+					<li><strong>Create new post/Edit post (only visible to admin when logged in)</strong>
+					<ul>
+						<li>Edit post
+						<ul>
+							<li>&ldquo;Edit post&rdquo; written on top as heading</li>
+							<li>All form fields prefilled with existing data</li>
+							<li>Data will be updated after submission, and blog details page will be opened</li>
+						</ul>
+						</li>
+						<li>Create new post (default)
+						<ul>
+							<li>&ldquo;New post&rdquo; written on the top as heading</li>
+							<li>Blank form fields will appear</li>
+							<li>After submitting details, data will be added on database<br />
+							&nbsp;</li>
+						</ul>
+						</li>
+					</ul>
+					</li>
+					<li><strong>User Detail</strong>
+					<ul>
+						<li>Visible only to logged-in users</li>
+						<li>Page will show username and email address</li>
+						<li>Update/ delete/ back to home button at bottom</li>
+						<li>Update button will update user details (point-6(b))</li>
+						<li><strong>Delete account</strong> button can delete user account
+						<ul>
+							<li>If the user wants to delete their account, they will need to confirm their password first</li>
+							<li>user will be taken to confirm delete page where they can choose either delete or cancel</li>
+							<li>if user decides to delete their account, they will need to enter their password</li>
+							<li>Password is necessary to delete the account and will be matched with the password in database</li>
+							<li>If password matches, user will be logged out and their details will be deleted from database</li>
+							<li><strong>Admin is not allowed to delete their account from database, they can only update information</strong><br />
+							&nbsp;</li>
+						</ul>
+						</li>
+					</ul>
+					</li>
+					<li><strong>About me</strong>
+					<ul>
+						<li>Static page with a back to home button at bottom</li>
+					</ul><br/>
+					</li>
+					<li><strong>New Updates:</strong>
+					<ul>
+						<li><i>additional security question during registration</i></li>
+						<li><i>forget password option on login page</i></li>
+						<li><i>flash messages (info, success, error) update</i></li>
+					</ul>
+					</li>
+				</ol>
 
-					<ol>
-						<li><strong>Nav Bar</strong>
-
-						<ul>
-							<li>This is home</li>
-							<li>All blogs</li>
-							<li>Blog details</li>
-							<li>Register/Update Details</li>
-							<li>Login/Logout (shows &quot;Logout&quot; if the user is logged in, otherwise &quot;Login&quot;)</li>
-							<li>Create new post (only visible to admin when logged in)</li>
-							<li>User details (only visible to logged-in users)</li>
-							<li>About me</li>
-							<li>Social media icons<br />
-							&nbsp;</li>
-						</ul>
-						</li>
-						<li><strong>Contact form (visible all times at the bottom of page)</strong>
-						<ul>
-							<li>Send message (only logged in user can send message to admin)<br />
-							&nbsp;</li>
-						</ul>
-						</li>
-						<li><strong>This is Home</strong>
-						<ul>
-							<li>Display latest post at the top</li>
-							<li>Only latest six post will appear on home page</li>
-							<li>&ldquo;More&rdquo; button will open pages where all blogs appear (linked with all blogs)</li>
-							<li>&ldquo;Full post&rdquo; button (linked with blog details, visible all time)</li>
-							<li>Clickable titles and images (linked with blog details)</li>
-							<li>Edit/Delete button (only visible to admin when logged in)</li>
-							<li>Create new post button at the bottom (only visible to admin when logged in)</li>
-							<li><strong>Delete post:</strong>
-							<ol>
-								<li>Admin need to follow an addition step before finally deleting the post</li>
-								<li>Confirmation page shows post id and title details and asks user whether to delete or cancel</li>
-								<li>If user finally chooses to delete the post, will be deleted from database<br />
-								&nbsp;</li>
-							</ol>
-							</li>
-						</ul>
-						</li>
-						<li><strong>All blogs</strong>
-						<ul>
-							<li>Show all blogs in database (starting from latest to oldest)</li>
-							<li>Clickable title and image (linked with blog details)</li>
-							<li>Full Post button (visible with each blog at all time)</li>
-							<li>Edit post/full post/delete post (only visible to admin with each blog, when logged in)</li>
-							<li>Create new post/ go up/ back to home buttons at bottom (create button only visible to admin when logged in, other visible all time)<br />
-							&nbsp;</li>
-						</ul>
-						</li>
-						<li><strong>Blog Details (not clickable on nav bar)</strong>
-						<ul>
-							<li>Displays details of the selected post</li>
-							<li>Back to home button (returns to home page)</li>
-							<li>Edit post button (only visible to admin when logged in)<br />
-							&nbsp;</li>
-						</ul>
-						</li>
-						<li><strong>Register/ Update Details (visible only one at a time to all users, default: register)</strong>
-						<ul>
-							<li>register</li>
-							<li>Takes username, email and password from user</li>
-							<li><i>(*new update) user now can set their pet’s name, this is security question for account recovery purpose</i></li>
-							<li>If email does not exist in database, it will allow user to register first and after than open login page</li>
-							<li>&ldquo;Already register Login!&rdquo; &nbsp;Button visible only if user not logged in</li>
-							<li>Update details (appear when user decides to update his details)
-							<ul>
-								<li>User can change username, email and password</li>
-								<li>Update me and cancel button at the bottom</li>
-								<li>If entered email already exists in database other than its own, it will ask user to choose other email.
-									User can change his username and password without changing email.<br />
-								&nbsp;</li>
-							</ul>
-							</li>
-						</ul>
-						</li>
-						<li><strong>Login/Logout</strong>
-						<ul>
-							<li>Appear only one at a time (default login)</li>
-							<li><i>(*new update) if user forget their password, they can use email and pet’s name to log in</i></li>
-							<li>If user already logged in it will show logout, otherwise login</li>
-							<li>logout takes user to home page after logged out<br />
-							&nbsp;</li>
-						</ul>
-						</li>
-						<li><strong>Create new post/Edit post (only visible to admin when logged in)</strong>
-						<ul>
-							<li>Edit post
-							<ul>
-								<li>&ldquo;Edit post&rdquo; written on top as heading</li>
-								<li>All form fields prefilled with existing data</li>
-								<li>Data will be updated after submission, and blog details page will be opened</li>
-							</ul>
-							</li>
-							<li>Create new post (default)
-							<ul>
-								<li>&ldquo;New post&rdquo; written on the top as heading</li>
-								<li>Blank form fields will appear</li>
-								<li>After submitting details, data will be added on database<br />
-								&nbsp;</li>
-							</ul>
-							</li>
-						</ul>
-						</li>
-						<li><strong>User Detail</strong>
-						<ul>
-							<li>Visible only to logged in users</li>
-							<li>Page will show username and email address</li>
-							<li>Update/ delete/ back to home button at bottom</li>
-							<li>Update button will update user details (point-6(b))</li>
-							<li><strong>Delete account</strong> button can delete user account
-							<ul>
-								<li>If the user wants to delete their account, they will need to confirm their password first</li>
-								<li>user will be taken to confirm delete page where they can choose either delete or cancel</li>
-								<li>if user decides to delete their account, they will need to enter their password</li>
-								<li>Password is necessary to delete the account and will be matched with the password in database</li>
-								<li>If password matches, user will be logged out and their details will be deleted from database</li>
-								<li><strong>Admin is not allowed to delete their account from database, they can only update information</strong><br />
-								&nbsp;</li>
-							</ul>
-							</li>
-						</ul>
-						</li>
-						<li><strong>About me</strong>
-						<ul>
-							<li>Static page with a back to home button at bottom</li>
-						</ul>
-						</li>
-					</ol>
-
-					<div class="d-flex justify-content-center">
-						<a href="{{url_for('home')}}" class="button small">Back to Home</a>
-					</div>
-		    	</div>
-		</div>
+				<div class="d-flex justify-content-center">
+					<a href="{{url_for('home')}}" class="button small">Back to Home</a>
+				</div>
+			</div>
 	</div>
 
 {% endblock %}
