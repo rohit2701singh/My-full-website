@@ -9,11 +9,8 @@
 
 {% block content %}
 	{{super()}}
-
-<!-- Page Header -->
-<div id="main">
 	<div class=" row">
-		<div class="container col-xl-12">
+		<div class="mt-4 container col-xl-12">
 		  <!-- TODO: Show a different h2 if editing existing post -->
 			{% if is_edit: %}
 				<h2><u>Edit Post</u></h2>
@@ -32,7 +29,5 @@
 			<a class="px-4" href="{{url_for('home')}}">Back to Home</a>
 		</div>
 	</div>
-</div>
-
 
 {% endblock %}
