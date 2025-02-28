@@ -106,7 +106,7 @@ def account_recover():
                 if recover_mail == select_user.email and pet_name_match:
                     login_user(select_user)  # for authentication
                     flash('Successfully logged in. Please update your information', 'success')
-                    return render_template('user_details.html', current_user=current_user, is_user_detail_active=True )
+                    return redirect(url_for('user_details'))
                 else:
                     flash("detail is incorrect. Pet name is wrong", 'warning')
                     return redirect(url_for('account_recover'))
@@ -304,6 +304,8 @@ def account_delete():
 
 @app.route('/user_detail', methods=['GET', 'POST'])
 def user_details():
+    show_details_form = RegisterForm(name=current_user.username, email=current_user.email)
+
     update_info = request.args.get('user_update')  # update logged in user's detail
     # print(update_info)
     if update_info:
@@ -337,7 +339,7 @@ def user_details():
                 return redirect(url_for('user_details'))
 
         return render_template('register.html', form=update_form, current_user=current_user, is_detail_update_active=True)
-    return render_template("user_details.html", current_user=current_user, is_user_detail_active=True)  # ex. <user 3>
+    return render_template("user_details.html", form=show_details_form, current_user=current_user, is_user_detail_active=True)  # ex. <user 3>
 
 
 @app.route('/about')
