@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_field %}
 {% block title %} User Detail {% endblock %}
 
 {% block wrapper %}
@@ -10,20 +11,14 @@
 	{{super()}}
 
     <div class="container">
-        <h1 class="mt-4">User Details</h1>
-        <form class="mt-5">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" class="form-control" id="username" value="{{current_user.username}}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" value="{{current_user.email}}" readonly>
-            </div>
+
+        <h2 class="mt-4">User Details</h2>
+            {{ render_field(form.name, value=current_user.username, disabled=true) }}
+            {{ render_field(form.email, disabled=true) }}
             <a type="submit" href="{{url_for('user_details', user_update= True)}}" class="mt-4 btn btn-primary btn-sm">Update Details</a>
             <a type="submit" href="{{url_for('account_delete')}}" class="mt-4 btn btn-danger btn-sm">Delete Account</a>
             <a href="{{url_for('home')}}" class="mt-4 btn btn-secondary btn-sm">Back to Home</a>
-        </form>
+
     </div>
 
 {% endblock %}
